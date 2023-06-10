@@ -1,0 +1,14 @@
+
+server:
+  port: 9999
+
+spring:
+  profiles:
+    include:
+      secret
+  datasource:
+    username: root
+
+logging:
+  level:
+    com.admin: debug
