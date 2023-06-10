@@ -5,7 +5,7 @@ target/
 !**/src/test/**/target/
 
 /src/main/resources/application-secret.yml
-
+/src/test/java/com/admin/CodeGenerator.java
 ### STS ###
 .apt_generated
 .classpath
