@@ -3,6 +3,7 @@ package com.admin.sys.service.impl;
 import com.admin.sys.entity.User;
 import com.admin.sys.mapper.UserMapper;
 import com.admin.sys.service.IUserService;
+import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -49,6 +51,24 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
             map.put("token", token);
             return map;
         }
+        return null;
+    }
+
+    @Override
+    public Map<String, Object> getUserInfo(String token) {
+//        从redis中获取用户信息
+        Object obj = redisTemplate.opsForValue().get(token);
+        if (obj != null) {
+            User loginUser = JSON.parseObject(JSON.toJSONString(obj), User.class);
+            Map<String, Object> map = new HashMap<>();
+            map.put("name", loginUser.getUsername());
+            map.put("avatar", loginUser.getAvatar());
+//            角色
+            List<String> roleName = this.baseMapper.selectRoleNameByUserId(loginUser.getId());
+            map.put("roles", roleName);
+            return map;
+        }
+
         return null;
     }
 }
