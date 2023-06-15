@@ -46,4 +46,9 @@ public class UserController {
         }
         return Result.fail(20003, "获取用户信息失败，请重新登录");
     }
+    @PostMapping("/logout")
+    public Result<?> logout(@RequestHeader("X-Token") String token) {
+        UserService.logout(token);
+        return Result.success("退出成功");
+    }
 }

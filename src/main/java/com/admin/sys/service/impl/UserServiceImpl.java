@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * <p>
- *  服务实现类
+ * 服务实现类
  * </p>
  *
  * @author kong
@@ -28,6 +28,7 @@ import java.util.concurrent.TimeUnit;
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IUserService {
     @Autowired
     private RedisTemplate redisTemplate;
+
     @Override
     public Map<String, Object> login(User user) {
 //        根据用户名和密码查询用户
@@ -39,11 +40,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 //        结果不为空，则生成token，存入redis
         if (user1 != null) {
 //            暂时使用uuid，终极方案是使用jwt
-            String token = "user:"+ UUID.randomUUID();
+            String token = "user:" + UUID.randomUUID();
 //            存入redis
             user1.setPassword(null);
             redisTemplate.opsForValue().set(token, user1, 30, TimeUnit.MINUTES);
-
 
 
 //            返回数据
@@ -70,5 +70,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         }
 
         return null;
+    }
+
+    @Override
+    public void logout(String token) {
+        redisTemplate.delete(token);
+
     }
 }
